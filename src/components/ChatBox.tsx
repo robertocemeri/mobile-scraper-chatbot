@@ -94,50 +94,12 @@ export default function ChatBox() {
       });
 
       const data = await response.json();
-      
-      if (response.status === 202) {
-        // Message is still processing
-        console.log('Message is still processing:', data.message);
-        // Optionally retry after a delay
-        setTimeout(() => {
-          // Implement a separate function to fetch messages
-          fetchMessages(data.threadId);
-        }, 2000);
-        return;
-      }
-
       setThreadId(data.threadId);
       const sortedMessages = [...data.messages].reverse();
       setMessages(sortedMessages as Message[]);
     } catch (error) {
       console.error('Error:', error);
     } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const fetchMessages = async (threadId: string) => {
-    try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: '', threadId }),
-      });
-
-      const data = await response.json();
-      
-      if (response.status === 202) {
-        // Still processing, retry after delay
-        setTimeout(() => fetchMessages(threadId), 2000);
-        return;
-      }
-
-      setThreadId(data.threadId);
-      const sortedMessages = [...data.messages].reverse();
-      setMessages(sortedMessages as Message[]);
-      setIsLoading(false);
-    } catch (error) {
-      console.error('Error fetching messages:', error);
       setIsLoading(false);
     }
   };
