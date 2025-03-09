@@ -79,10 +79,11 @@ export default function ChatBox() {
     const userMessage = input;
     setInput('');
     
-    const newUserMessage = { 
-      role: 'user', 
-      content: [{ text: { value: userMessage } }] 
+    const newUserMessage: Message = {
+      role: 'user',
+      content: [{ text: { value: userMessage } }]
     };
+    
     setMessages(prev => [...prev, newUserMessage]);
 
     try {
@@ -95,7 +96,7 @@ export default function ChatBox() {
       const data = await response.json();
       setThreadId(data.threadId);
       const sortedMessages = [...data.messages].reverse();
-      setMessages(sortedMessages);
+      setMessages(sortedMessages as Message[]);
     } catch (error) {
       console.error('Error:', error);
     } finally {
