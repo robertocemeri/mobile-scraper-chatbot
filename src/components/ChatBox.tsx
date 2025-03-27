@@ -147,6 +147,7 @@ export default function ChatBox() {
             placeholder="Type your message..."
             className="flex-1 p-2 border rounded"
             disabled={isLoading}
+            autoFocus
           />
           <button
             type="submit"
