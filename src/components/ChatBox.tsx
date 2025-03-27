@@ -11,7 +11,15 @@ export default function ChatBox() {
   const [threadId, setThreadId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const [dots, setDots] = useState('');
+
+  // Auto-focus input after loading completes
+  useEffect(() => {
+    if (!isLoading) {
+      inputRef.current?.focus();
+    }
+  }, [isLoading]);
 
   // Parse markdown links in the format [text](url)
   const parseLinks = (text: string) => {
@@ -141,6 +149,7 @@ export default function ChatBox() {
       <form onSubmit={handleSubmit} className="p-4 border-t">
         <div className="flex gap-2">
           <input
+            ref={inputRef}
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
