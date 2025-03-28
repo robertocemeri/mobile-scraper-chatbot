@@ -29,28 +29,23 @@ export default function ChatBox() {
     let match;
 
     while ((match = linkRegex.exec(text)) !== null) {
-      // Add text before the link
       if (match.index > lastIndex) {
         parts.push(text.slice(lastIndex, match.index));
       }
-
-      // Add the link as JSX
       parts.push(
         <a
           key={match.index}
           href={match[2]}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-blue-600 hover:underline"
+          className="text-blue-500 hover:text-blue-600 underline decoration-blue-300 underline-offset-2"
         >
           {match[1]}
         </a>
       );
-
       lastIndex = match.index + match[0].length;
     }
 
-    // Add remaining text
     if (lastIndex < text.length) {
       parts.push(text.slice(lastIndex));
     }
@@ -113,9 +108,16 @@ export default function ChatBox() {
   };
 
   return (
-    <div className="flex flex-col h-[600px] w-full max-w-2xl mx-auto border rounded-lg">
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        <div className="flex flex-col space-y-4">
+    <div className="flex flex-col h-[700px] w-full max-w-3xl mx-auto bg-white rounded-xl shadow-lg border border-gray-100">
+      {/* Header */}
+      <div className="p-4 border-b border-gray-100">
+        <h2 className="text-lg font-semibold text-gray-700">Chat Assistant</h2>
+        <p className="text-sm text-gray-500">Ask me anything...</p>
+      </div>
+
+      {/* Messages Container */}
+      <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-gray-50">
+        <div className="flex flex-col space-y-6">
           {messages.map((message, index) => (
             <div
               key={index}
@@ -124,46 +126,57 @@ export default function ChatBox() {
               }`}
             >
               <div
-                className={`max-w-[80%] rounded-lg p-3 ${
+                className={`max-w-[80%] rounded-2xl p-4 shadow-sm ${
                   message.role === 'user'
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-200 text-gray-800'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-white text-gray-700'
                 }`}
               >
-                {parseLinks(message.content[0].text.value)}
+                {/* <div className={`text-sm ${
+                  message.role === 'user' ? 'text-blue-100' : 'text-gray-500'
+                } mb-1`}>
+                  {message.role === 'user' ? 'You' : 'Assistant'}
+                </div> */}
+                <div className="text-[15px] leading-relaxed">
+                  {parseLinks(message.content[0].text.value)}
+                </div>
               </div>
             </div>
           ))}
           {isLoading && (
             <div className="flex justify-start">
-              <div className="max-w-[80%] rounded-lg p-3 bg-gray-200 text-gray-800">
-                <span className="inline-block min-w-[20px]">
-                  Thinking{dots}
-                </span>
+              <div className="max-w-[80%] rounded-2xl p-4 bg-white shadow-sm">
+                <div className="text-sm text-gray-500 mb-1">Assistant</div>
+                <div className="text-[15px] text-gray-700 flex items-center space-x-2">
+                  <span>Thinking</span>
+                  <span className="w-12 text-gray-400">{dots}</span>
+                </div>
               </div>
             </div>
           )}
           <div ref={messagesEndRef} />
         </div>
       </div>
-      <form onSubmit={handleSubmit} className="p-4 border-t">
-        <div className="flex gap-2">
+
+      {/* Input Form */}
+      <form onSubmit={handleSubmit} className="p-4 bg-white border-t border-gray-100">
+        <div className="flex gap-3">
           <input
             ref={inputRef}
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Type your message..."
-            className="flex-1 p-2 border rounded"
+            className="flex-1 px-4 py-3 rounded-xl border text-gray-700 border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
             disabled={isLoading}
             autoFocus
           />
           <button
             type="submit"
             disabled={isLoading}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-blue-300 min-w-[100px]"
+            className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 disabled:bg-blue-300 transition-colors duration-200 font-medium min-w-[100px] shadow-sm"
           >
-            {isLoading ? 'Wait' : 'Send'}
+            {isLoading ? 'Wait...' : 'Send'}
           </button>
         </div>
       </form>
