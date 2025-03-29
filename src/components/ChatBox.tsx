@@ -107,16 +107,33 @@ export default function ChatBox() {
     }
   };
 
+  const handleQuickStart = async (message: string) => {
+    setInput(message);
+    const fakeEvent = { preventDefault: () => {} } as React.FormEvent;
+    handleSubmit(fakeEvent);
+  };
+
   return (
     <div className="flex flex-col h-[700px] w-full max-w-3xl mx-auto bg-white rounded-xl shadow-lg border border-gray-100">
       {/* Header */}
       <div className="p-4 border-b border-gray-100">
-        <h2 className="text-lg font-semibold text-gray-700">Chat Assistant</h2>
-        <p className="text-sm text-gray-500">Ask me anything...</p>
+        <h2 className="text-lg font-semibold text-gray-700">Mobile Plan Assistant</h2>
+        <p className="text-sm text-gray-500">Let me help you find the perfect mobile plan...</p>
       </div>
 
       {/* Messages Container */}
       <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-gray-50">
+        {messages.length === 0 && (
+          <div className="flex flex-col items-center justify-center h-full space-y-4">
+            <p className="text-gray-500 text-center">Get started by clicking below or type your question</p>
+            <button
+              onClick={() => handleQuickStart("I need help finding a mobile plan")}
+              className="px-6 py-3 bg-blue-100 text-blue-700 rounded-xl hover:bg-blue-200 transition-colors duration-200 font-medium shadow-sm"
+            >
+              🔍 Find a mobile plan
+            </button>
+          </div>
+        )}
         <div className="flex flex-col space-y-6">
           {messages.map((message, index) => (
             <div
@@ -132,11 +149,6 @@ export default function ChatBox() {
                     : 'bg-white text-gray-700'
                 }`}
               >
-                {/* <div className={`text-sm ${
-                  message.role === 'user' ? 'text-blue-100' : 'text-gray-500'
-                } mb-1`}>
-                  {message.role === 'user' ? 'You' : 'Assistant'}
-                </div> */}
                 <div className="text-[15px] leading-relaxed">
                   {parseLinks(message.content[0].text.value)}
                 </div>
